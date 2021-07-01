@@ -189,6 +189,7 @@
   <ItemGroup>
     <ClInclude Include="CourseManager.h" />
     <ClInclude Include="CourseManagerDlg.h" />
+    <ClInclude Include="DataFile.hpp" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />

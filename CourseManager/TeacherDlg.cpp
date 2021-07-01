@@ -6,7 +6,7 @@
 #include "TeacherDlg.h"
 #include "afxdialogex.h"
 
-#include "csv-parser.hpp"
+#include "DataFile.hpp"
 
 
 // CTeacherDlg dialog
@@ -52,10 +52,15 @@ BOOL CTeacherDlg::OnInitDialog()
 
 void CTeacherDlg::OnBnClickedImport()
 {
-	CFileDialog dlg(TRUE, L"csv", NULL, OFN_FILEMUSTEXIST, L"Text files (*.txt)|*.txt|CSV Files (*.csv)|*.csv", this);
-	if (dlg.DoModal() == IDOK) {
-		CString path = dlg.GetPathName();
-
-
+	ScoreDataFile file;
+	vector<Score> scores = file.OpenDlg(this);
+	for (uint32_t i = 0; i < scores.size(); i++) {
+		auto& score = scores[i];
+		m_List.InsertItem(i, score.sid);
+		m_List.SetItem(i, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
+		m_List.SetItem(i, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
+		CString text;
+		text.Format(L"%d", score.score);  //#shit
+		m_List.SetItem(i, 3, LVIF_TEXT, text, 0, 0, 0, 0);
 	}
 }

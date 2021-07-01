@@ -36,6 +36,9 @@
     <ClInclude Include="TeacherDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="DataFile.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CourseManager.cpp">
