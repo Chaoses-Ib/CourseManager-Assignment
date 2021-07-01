@@ -74,6 +74,11 @@ END_MESSAGE_MAP()
 
 // CCourseManagerDlg message handlers
 
+vector<Staff> g_staffs;
+vector<Course> g_courses;
+vector<Student> g_students;
+vector<Score> g_scores;
+
 BOOL CCourseManagerDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -103,7 +108,18 @@ BOOL CCourseManagerDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	// TODO: Add extra initialization here
+	// Extra initialization
+	StaffDataFile staff_file;
+	g_staffs = staff_file.OpenFile(LR"(.\data\staff.txt)");
+
+	CourseDataFile course_file;
+	g_courses = course_file.OpenFile(LR"(.\data\module.txt)");
+
+	StudentDataFile student_file;
+	g_students = student_file.OpenFile(LR"(.\data\student.txt)");
+
+	ScoreDataFile score_file;
+	g_scores = score_file.OpenFile(LR"(.\data\score.txt)");
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

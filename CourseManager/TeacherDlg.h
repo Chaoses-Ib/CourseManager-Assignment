@@ -29,4 +29,9 @@ public:
 	afx_msg void OnBnClickedImport();
 protected:
 	HICON m_hIcon;
+public:
+	afx_msg void OnCbnSelchangeComboClass();
+	CComboBox m_comboClass;
+protected:
+	void RefreshScores();
 };

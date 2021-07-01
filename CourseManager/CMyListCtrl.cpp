@@ -13,6 +13,7 @@ IMPLEMENT_DYNAMIC(CMyListCtrl, CListCtrl)
 CMyListCtrl::CMyListCtrl()
 {
 
+	m_sorted_column = 0;
 }
 
 CMyListCtrl::~CMyListCtrl()
@@ -40,12 +41,11 @@ void CMyListCtrl::OnHdnItemclick(NMHDR* pNMHDR, LRESULT* pResult)
 	HDITEM header;
 	header.mask = HDI_FORMAT;
 
-	static int sorted_header = -1;
-	if (phdr->iItem != sorted_header) {
-		GetHeaderCtrl()->GetItem(sorted_header, &header);
+	if (phdr->iItem != m_sorted_column) {
+		GetHeaderCtrl()->GetItem(m_sorted_column, &header);
 		header.fmt = header.fmt & ~HDF_SORTDOWN & ~HDF_SORTUP;
-		GetHeaderCtrl()->SetItem(sorted_header, &header);
-		sorted_header = phdr->iItem;
+		GetHeaderCtrl()->SetItem(m_sorted_column, &header);
+		m_sorted_column = phdr->iItem;
 	}
 
 	GetHeaderCtrl()->GetItem(phdr->iItem, &header);
@@ -60,7 +60,15 @@ void CMyListCtrl::OnHdnItemclick(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 	GetHeaderCtrl()->SetItem(phdr->iItem, &header);
 
-	SortItems(CompareFunc, header.fmt & HDF_SORTDOWN ? phdr->iItem | 0x80000000 : phdr->iItem);
+	RefreshSort();
 
 	*pResult = 0;
+}
+
+void CMyListCtrl::RefreshSort()
+{
+	HDITEM header;
+	header.mask = HDI_FORMAT;
+	GetHeaderCtrl()->GetItem(m_sorted_column, &header);
+	SortItems(CompareFunc, header.fmt & HDF_SORTDOWN ? m_sorted_column | 0x80000000 : m_sorted_column);
 }

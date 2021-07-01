@@ -48,7 +48,7 @@ public:
 	vector<Data> OpenFile(CString path) {
 		std::ifstream fs(path);
 		if (!fs.is_open()) {
-			//#TODO
+			assert(false);  //#TODO
 		}
 
 		return Parse(fs);
@@ -59,12 +59,11 @@ public:
 		string line;
 		getline(f, line);  //ignore first line
 
-		vector<Score> results;
+		vector<Data> results;
 		do {
 			getline(f, line);  //#shit
 			stringstream ss(line);
 
-			Score sscore;
 			string buf;
 			ss >> buf;
 			if (buf == "#END")
