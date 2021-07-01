@@ -187,6 +187,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="CMyListCtrl.h" />
     <ClInclude Include="CourseManager.h" />
     <ClInclude Include="CourseManagerDlg.h" />
     <ClInclude Include="DataFile.hpp" />
@@ -197,6 +198,7 @@
     <ClInclude Include="TeacherDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="CMyListCtrl.cpp" />
     <ClCompile Include="CourseManager.cpp" />
     <ClCompile Include="CourseManagerDlg.cpp" />
     <ClCompile Include="pch.cpp">

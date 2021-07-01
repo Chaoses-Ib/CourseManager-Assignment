@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "CMyListCtrl.h"
 
 // CTeacherDlg dialog
 
@@ -23,8 +23,10 @@ protected:
 public:
 //	afx_msg void OnLvnItemchangedList(NMHDR* pNMHDR, LRESULT* pResult);
 private:
-	CListCtrl m_List;
+	CMyListCtrl m_List;
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedImport();
+protected:
+	HICON m_hIcon;
 };

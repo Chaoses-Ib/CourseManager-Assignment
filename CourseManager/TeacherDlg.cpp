@@ -16,6 +16,7 @@ IMPLEMENT_DYNAMIC(CTeacherDlg, CDialogEx)
 CTeacherDlg::CTeacherDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_TEACHER_DIALOG, pParent)
 {
+	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
 CTeacherDlg::~CTeacherDlg()
@@ -33,30 +34,47 @@ BEGIN_MESSAGE_MAP(CTeacherDlg, CDialogEx)
 ON_BN_CLICKED(IDC_IMPORT, &CTeacherDlg::OnBnClickedImport)
 END_MESSAGE_MAP()
 
+static vector<Score> scores;
 
 // CTeacherDlg message handlers
+
+int __stdcall CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM sort) {
+	int result;
+	switch (sort & ~0x80000000) {
+	case 0: result = scores[lParam1].sid.Compare(scores[lParam2].sid); break;
+	case 1: result = scores[lParam1].name.Compare(scores[lParam2].name); break;
+	case 2: result = scores[lParam1].course.Compare(scores[lParam2].course); break;
+	case 3: result = scores[lParam1].score - scores[lParam2].score; break;
+	default:
+		assert(false);
+	}
+	return sort & 0x80000000 ? -result : result;  //down : up
+}
 
 BOOL CTeacherDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
+	SetIcon(m_hIcon, TRUE);			// Set big icon
+	SetIcon(m_hIcon, FALSE);		// Set small icon
+
+	m_List.CompareFunc = CompareFunc;
 	m_List.InsertColumn(0, L"学号", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(1, L"姓名", LVCFMT_LEFT, 90);
-	m_List.InsertColumn(2, L"课程名称", LVCFMT_LEFT, 90);
+	m_List.InsertColumn(2, L"课程名称", LVCFMT_LEFT, 200);
 	m_List.InsertColumn(3, L"成绩", LVCFMT_LEFT, 90);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
 
-
 void CTeacherDlg::OnBnClickedImport()
 {
 	ScoreDataFile file;
-	vector<Score> scores = file.OpenDlg(this);
+	scores = file.OpenDlg(this);
 	for (uint32_t i = 0; i < scores.size(); i++) {
 		auto& score = scores[i];
-		m_List.InsertItem(i, score.sid);
+		m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, i, score.sid, 0, 0, 0, i);
 		m_List.SetItem(i, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
 		m_List.SetItem(i, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
 		CString text;
