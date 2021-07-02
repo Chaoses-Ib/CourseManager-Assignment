@@ -195,6 +195,10 @@
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="StudentDlg.h" />
+    <ClInclude Include="SystemCourse.h" />
+    <ClInclude Include="SystemDlg.h" />
+    <ClInclude Include="SystemStudent.h" />
+    <ClInclude Include="SystemTeacher.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="TeacherDlg.h" />
   </ItemGroup>
@@ -210,6 +214,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="StudentDlg.cpp" />
+    <ClCompile Include="SystemCourse.cpp" />
+    <ClCompile Include="SystemDlg.cpp" />
+    <ClCompile Include="SystemStudent.cpp" />
+    <ClCompile Include="SystemTeacher.cpp" />
     <ClCompile Include="TeacherDlg.cpp" />
   </ItemGroup>
   <ItemGroup>

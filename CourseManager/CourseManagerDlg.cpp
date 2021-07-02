@@ -6,9 +6,11 @@
 #include "framework.h"
 #include "CourseManager.h"
 #include "CourseManagerDlg.h"
+#include "afxdialogex.h"
+
 #include "TeacherDlg.h"
 #include "StudentDlg.h"
-#include "afxdialogex.h"
+#include "SystemDlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,6 +73,7 @@ BEGIN_MESSAGE_MAP(CCourseManagerDlg, CDialogEx)
 //	ON_BN_CLICKED(IDCANCEL, &CCourseManagerDlg::OnBnClickedCancel)
 ON_BN_CLICKED(IDCANCEL, &CCourseManagerDlg::OnBnClickedCancel)
 ON_BN_CLICKED(IDC_STUDENT_DLG, &CCourseManagerDlg::OnBnClickedStudentDlg)
+ON_BN_CLICKED(IDC_SYSTEM_DLG, &CCourseManagerDlg::OnBnClickedSystemDlg)
 END_MESSAGE_MAP()
 
 
@@ -164,6 +167,10 @@ HCURSOR CCourseManagerDlg::OnQueryDragIcon()
 }
 
 
+void CCourseManagerDlg::OnBnClickedCancel()
+{
+	CDialogEx::OnCancel();
+}
 
 void CCourseManagerDlg::OnBnClickedTeacherDlg()
 {
@@ -177,7 +184,8 @@ void CCourseManagerDlg::OnBnClickedStudentDlg()
 	dlg.DoModal();
 }
 
-void CCourseManagerDlg::OnBnClickedCancel()
+void CCourseManagerDlg::OnBnClickedSystemDlg()
 {
-	CDialogEx::OnCancel();
+	SystemDlg dlg;
+	dlg.DoModal();
 }
