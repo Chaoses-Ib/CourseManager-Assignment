@@ -19,6 +19,7 @@ CTeacherDlg::CTeacherDlg(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_TEACHER_DIALOG, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	m_iEditList = -1;
 }
 
 CTeacherDlg::~CTeacherDlg()
@@ -32,6 +33,7 @@ void CTeacherDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO_CLASS, m_comboClass);
 	DDX_Control(pDX, IDC_EDIT_FIND, m_editFind);
 	DDX_Control(pDX, IDC_LIST_STATISTICS, m_listStatistics);
+	DDX_Control(pDX, IDC_EDIT_LIST, m_editList);
 }
 
 
@@ -40,6 +42,8 @@ ON_BN_CLICKED(IDC_IMPORT, &CTeacherDlg::OnBnClickedImport)
 ON_CBN_SELCHANGE(IDC_COMBO_CLASS, &CTeacherDlg::OnCbnSelchangeComboClass)
 ON_BN_CLICKED(IDCANCEL, &CTeacherDlg::OnBnClickedCancel)
 ON_BN_CLICKED(IDC_BUTTON_FIND, &CTeacherDlg::OnBnClickedButtonFind)
+ON_NOTIFY(NM_DBLCLK, IDC_LIST, &CTeacherDlg::OnNMDblclkList)
+ON_EN_KILLFOCUS(IDC_EDIT_LIST, &CTeacherDlg::OnEnKillfocusEditList)
 END_MESSAGE_MAP()
 
 // CTeacherDlg message handlers
@@ -71,6 +75,7 @@ BOOL CTeacherDlg::OnInitDialog()
 	m_List.InsertColumn(1, L"姓名", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(2, L"课程名称", LVCFMT_LEFT, 200);
 	m_List.InsertColumn(3, L"成绩", LVCFMT_LEFT, 90);
+	m_editList.SetParent(&m_List);
 
 
 	m_listStatistics.SetExtendedStyle(m_List.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
@@ -274,4 +279,67 @@ void CTeacherDlg::RefreshStatistics()
 		m_listStatistics.SetItem(i, 3, LVIF_TEXT, buf, 0, 0, 0, 0);
 		++i;
 	}
+}
+
+void CTeacherDlg::ShowEditList(int item)
+{
+	CRect rect;
+	m_List.GetSubItemRect(item, 3, LVIR_LABEL, rect);
+	m_editList.MoveWindow(&rect);
+	m_editList.SetWindowTextW(m_List.GetItemText(item, 3));
+	m_editList.SetSel(-1);
+	m_editList.ShowWindow(SW_SHOW);
+	m_editList.SetFocus();
+
+	m_iEditList = item;
+
+}
+
+void CTeacherDlg::OnNMDblclkList(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	NMLISTVIEW* list = (NMLISTVIEW*)pNMHDR;
+
+	if (m_iEditList == -1) {
+		if (list->iSubItem == 3) {
+			ShowEditList(list->iItem);
+		}
+	}
+
+	*pResult = 0;
+}
+
+void CTeacherDlg::OnEnKillfocusEditList()
+{
+	assert(m_iEditList != -1);
+	CString text;
+	m_editList.GetWindowTextW(text);
+
+	std::wstringstream ss(text.GetString());
+	ss >> g_scores[m_iEditList].score;
+	m_modified = true;
+
+	text.Format(L"%d", g_scores[m_iEditList].score);
+	m_List.SetItemText(m_iEditList, 3, text);
+
+	m_editList.ShowWindow(SW_HIDE);
+	m_iEditList = -1;
+}
+
+BOOL CTeacherDlg::PreTranslateMessage(MSG* pMsg)
+{
+	if (pMsg->message == WM_KEYDOWN && pMsg->wParam == VK_RETURN) {
+		if (GetFocus() == &m_editList) {
+			OnEnKillfocusEditList();
+		}
+		else if (GetFocus() == &m_List) {
+			POSITION pos = m_List.GetFirstSelectedItemPosition();
+			if (pos != NULL) {
+				ShowEditList(m_List.GetNextSelectedItem(pos));
+			}
+		}
+		return TRUE;
+	}
+
+	return CDialogEx::PreTranslateMessage(pMsg);
 }

@@ -45,4 +45,14 @@ public:
 	void RefreshStatistics();
 	void ForeachFilteredScore(std::function<void(size_t, Score&)>);
 	CListCtrl m_listStatistics;
+
+public:
+	CEdit m_editList;
+	int m_iEditList;
+	
+	void ShowEditList(int item);
+	afx_msg void OnNMDblclkList(NMHDR* pNMHDR, LRESULT* pResult);
+
+	afx_msg void OnEnKillfocusEditList();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };
