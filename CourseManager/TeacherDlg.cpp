@@ -29,6 +29,7 @@ void CTeacherDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST, m_List);
 	DDX_Control(pDX, IDC_COMBO_CLASS, m_comboClass);
+	DDX_Control(pDX, IDC_EDIT_FIND, m_editFind);
 }
 
 
@@ -36,6 +37,7 @@ BEGIN_MESSAGE_MAP(CTeacherDlg, CDialogEx)
 ON_BN_CLICKED(IDC_IMPORT, &CTeacherDlg::OnBnClickedImport)
 ON_CBN_SELCHANGE(IDC_COMBO_CLASS, &CTeacherDlg::OnCbnSelchangeComboClass)
 ON_BN_CLICKED(IDCANCEL, &CTeacherDlg::OnBnClickedCancel)
+ON_BN_CLICKED(IDC_BUTTON_FIND, &CTeacherDlg::OnBnClickedButtonFind)
 END_MESSAGE_MAP()
 
 // CTeacherDlg message handlers
@@ -60,7 +62,10 @@ BOOL CTeacherDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
+	m_List.ModifyStyle(0, LVS_SHOWSELALWAYS);
+	m_List.SetExtendedStyle(m_List.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
 	m_List.CompareFunc = CompareFunc;
+
 	m_List.InsertColumn(0, L"学号", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(1, L"姓名", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(2, L"课程名称", LVCFMT_LEFT, 200);
@@ -153,4 +158,57 @@ void CTeacherDlg::OnBnClickedCancel()
 	else {
 		CDialogEx::OnCancel();
 	}
+}
+
+void CTeacherDlg::OnBnClickedButtonFind()
+{
+	CString find;
+	m_editFind.GetWindowTextW(find);
+	if (find.IsEmpty())
+		return;
+
+	int item = -1;
+	if (L'0' <= find[0] && find[0] <= '9') {  //sid
+		LVFINDINFOW info;
+		info.flags = LVFI_STRING;
+		info.psz = find;
+		item = m_List.FindItem(&info);  //only first column
+	}
+	else {  //name
+		int sel = m_comboClass.GetCurSel();
+		if (sel == 0) {
+			for (size_t i = 0; i < g_scores.v.size(); i++) {
+				auto& score = g_scores[i];
+				if (score.name == find) {
+					item = i;
+					break;
+				}
+			}
+		}
+		else {
+			CString classid;
+			m_comboClass.GetLBText(sel, classid);
+			for (size_t i = 0; i < g_scores.v.size(); i++) {
+				auto& score = g_scores[i];
+				if (score.name == find
+					&& g_students.find_sid(score.sid)->classid == classid) {
+					item = i;
+					break;
+				}
+			}
+		}
+
+		if (item != -1) {
+			LVFINDINFOW info;
+			info.flags = LVFI_PARAM;
+			info.lParam = item;
+			item = m_List.FindItem(&info);
+		}
+	}
+
+	if (item == -1)
+		return;
+	m_List.SetFocus();  //otherwise the selected item is in grey
+	m_List.SetItemState(item, LVIS_SELECTED, LVIS_SELECTED);
+	m_List.EnsureVisible(item, false);
 }

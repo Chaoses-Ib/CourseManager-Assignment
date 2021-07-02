@@ -38,4 +38,7 @@ public:
 	afx_msg void OnBnClickedCancel();
 protected:
 	bool m_modified = false;
+public:
+	afx_msg void OnBnClickedButtonFind();
+	CEdit m_editFind;
 };
