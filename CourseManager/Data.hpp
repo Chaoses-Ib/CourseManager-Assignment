@@ -10,6 +10,14 @@ struct Staff {
 	CString tid;
 	CString name;
 	vector<CString> courses;
+	struct Evaluation {
+		uint32_t n = 0;
+		uint32_t sum = 0;
+		double avg() {
+			if (n == 0) return 0;
+			return (double)sum / n;
+		}
+	} evaluation;
 };
 
 struct Course {
@@ -32,6 +40,11 @@ struct Score {
 	CString name;
 	CString course;
 	uint32_t score;
+	struct Evaluation{
+		bool evaluated = false;
+		uint8_t score = 0;
+		CString comment = L"";
+	} evaluation;
 };
 
 
@@ -208,6 +221,15 @@ extern struct StaffUtil : DataUtil<Staff> {
 		for (Staff& staff : v) {
 			if (staff.tid == tid)
 				return &staff;
+		}
+		return nullptr;
+	}
+
+	Staff* find_course(CString course) {
+		for (Staff& staff : v) {
+			for(CString& s : staff.courses)
+				if (s == course)
+					return &staff;
 		}
 		return nullptr;
 	}

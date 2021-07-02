@@ -41,15 +41,29 @@ END_MESSAGE_MAP()
 
 // SystemTeacher message handlers
 
+static int __stdcall CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM sort) {
+	int result;
+	switch (sort & ~0x80000000) {
+	case 0: result = g_staffs[lParam1].tid.Compare(g_staffs[lParam2].tid); break;
+	case 1: result = g_staffs[lParam1].name.Compare(g_staffs[lParam2].name); break;
+	case 2: result = g_staffs[lParam1].courses.size() - g_staffs[lParam2].courses.size(); break;
+	case 3: result = g_staffs[lParam1].evaluation.avg() - g_staffs[lParam2].evaluation.avg(); break;
+	default:
+		assert(false);
+	}
+	return sort & 0x80000000 ? -result : result;  //down : up
+}
 
 BOOL SystemTeacher::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
 	m_List.SetExtendedStyle(m_List.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
+	m_List.CompareFunc = CompareFunc;
 	m_List.InsertColumn(0, L"工号", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(1, L"姓名", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(2, L"授课", LVCFMT_LEFT, 400);
+	m_List.InsertColumn(3, L"平均评分", LVCFMT_LEFT, 60);
 
 	for (int i = 0; i < g_staffs.v.size(); i++) {
 		AddListItem(i);
@@ -62,7 +76,7 @@ BOOL SystemTeacher::OnInitDialog()
 void SystemTeacher::AddListItem(int i)
 {
 	Staff& staff = g_staffs[i];
-	m_List.InsertItem(i, staff.tid);
+	m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, i, staff.tid, 0, 0, 0, i);
 	m_List.SetItemText(i, 1, staff.name);
 	CString buf;
 	for (CString& s : staff.courses) {
@@ -70,6 +84,11 @@ void SystemTeacher::AddListItem(int i)
 		buf.Append(L" ");
 	}
 	m_List.SetItemText(i, 2, buf);
+
+	if (staff.evaluation.n) {
+		buf.Format(L"%.1f", (double)staff.evaluation.sum / staff.evaluation.n);
+		m_List.SetItemText(i, 3, buf);
+	}
 }
 
 void SystemTeacher::OnBnClickedButtonSystemTeacherAdd()
@@ -112,7 +131,8 @@ void SystemTeacher::OnNMRClickListSystemTeacher(NMHDR* pNMHDR, LRESULT* pResult)
 
 void SystemTeacher::OnSystemDelete()
 {
+	int i = m_List.GetItemData(iItem);
 	m_List.DeleteItem(iItem);
-	g_staffs.v.erase(std::next(g_staffs.v.begin(), iItem));
+	g_staffs.v.erase(std::next(g_staffs.v.begin(), i));
 	m_bModified = true;
 }

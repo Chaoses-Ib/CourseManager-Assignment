@@ -4,6 +4,7 @@
 #include "pch.h"
 #include "CourseManager.h"
 #include "StudentDlg.h"
+#include "StudentEvaluationDlg.h"
 #include "afxdialogex.h"
 
 
@@ -37,6 +38,7 @@ BEGIN_MESSAGE_MAP(StudentDlg, CDialogEx)
 	ON_NOTIFY(NM_RCLICK, IDC_LIST, &StudentDlg::OnNMRClickList)
 	ON_COMMAND(ID_STUDENT_JOIN, &StudentDlg::OnStudentJoin)
 	ON_COMMAND(ID_STUDENT_EXIT, &StudentDlg::OnStudentExit)
+	ON_COMMAND(ID_STUDENT_EVALUATE, &StudentDlg::OnStudentEvaluate)
 END_MESSAGE_MAP()
 
 
@@ -55,10 +57,12 @@ BOOL StudentDlg::OnInitDialog()
 	m_List.InsertColumn(4, L"课程类别", LVCFMT_LEFT, 60);
 	m_List.InsertColumn(5, L"成绩", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(6, L"选修", LVCFMT_LEFT, 60);
+	m_List.InsertColumn(7, L"评分", LVCFMT_LEFT, 40);
+	m_List.InsertColumn(8, L"评语", LVCFMT_LEFT, 200);
 
 	for (int i = 0; i < g_courses.v.size(); i++) {
 		Course& course = g_courses[i];
-		m_List.InsertItem(i, course.cid);
+		m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, i, course.cid, 0, 0, 0, -1);
 		m_List.SetItemText(i, 1, course.name);
 		CString buf;
 		buf.Format(L"%.1f", course.credit);
@@ -89,16 +93,29 @@ void StudentDlg::OnBnClickedButtonQuery()
 		m_List.SetItemText(i, 5, L"");
 		m_List.SetItemText(i, 6, L"");
 	}
-	for (Score& score : g_scores.v) {
+	for (int i = 0; i < g_scores.v.size(); i++) {
+		Score& score = g_scores[i];
 		if (score.sid == sid) {
 			int course = g_courses.index_name(score.course);
 			if (course == -1)
 				//#TODO
 				continue;
 			
+			m_List.SetItemData(course, i);
 			buf.Format(L"%d", score.score);
 			m_List.SetItemText(course, 5, buf);
 			m_List.SetItemText(course, 6, L"已修");
+
+			if (score.evaluation.evaluated) {
+				buf.Format(L"%d", score.evaluation.score);
+				m_List.SetItemText(course, 7, buf);
+				m_List.SetItemText(course, 8, score.evaluation.comment);
+			}
+			else {
+				m_List.SetItemText(course, 7, L"");
+				m_List.SetItemText(course, 8, L"");
+			}
+			
 
 			total_credit += g_courses[course].credit;
 		}
@@ -129,10 +146,14 @@ void StudentDlg::OnNMRClickList(NMHDR* pNMHDR, LRESULT* pResult)
 	CMenu* submenu = menu.GetSubMenu(0);
 
 	CString join = m_List.GetItemText(iItem, 6);
-	if (join == L"")
+	if (join == L"") {
 		submenu->EnableMenuItem(ID_STUDENT_EXIT, MF_GRAYED);
-	else if (join == L"选修")
+		submenu->EnableMenuItem(ID_STUDENT_EVALUATE, MF_GRAYED);
+	}
+	else if (join == L"选修") {
 		submenu->EnableMenuItem(ID_STUDENT_JOIN, MF_GRAYED);
+		submenu->EnableMenuItem(ID_STUDENT_EVALUATE, MF_GRAYED);
+	}
 	else if (join == L"已修") {
 		submenu->EnableMenuItem(ID_STUDENT_JOIN, MF_GRAYED);
 		submenu->EnableMenuItem(ID_STUDENT_EXIT, MF_GRAYED);
@@ -168,4 +189,45 @@ BOOL StudentDlg::PreTranslateMessage(MSG* pMsg)
 	}
 
 	return CDialogEx::PreTranslateMessage(pMsg);
+}
+
+void StudentDlg::OnStudentEvaluate()
+{
+	LPARAM i = m_List.GetItemData(iItem);
+	assert(i != -1);
+	Score& score = g_scores[i];
+	Score::Evaluation& evaluation = score.evaluation;
+	Staff* staff = g_staffs.find_course(score.course);
+	StudentEvaluationDlg dlg;
+	if (dlg.m_bEvaluated = evaluation.evaluated) {
+		if (staff) {
+			--staff->evaluation.n;
+			staff->evaluation.sum -= evaluation.score;
+		}
+
+		dlg.m_iScore = evaluation.score;
+		dlg.m_sComment = evaluation.comment;
+	}
+
+	INT_PTR result = dlg.DoModal();
+	switch (result) {
+	default: assert(false);
+	case IDOK:
+	{
+		evaluation.evaluated = true;
+		evaluation.score = dlg.m_iScore;
+		evaluation.comment = dlg.m_sComment;
+
+		if (staff) {
+			++staff->evaluation.n;
+			staff->evaluation.sum += evaluation.score;
+		}
+
+		CString buf;
+		buf.Format(L"%d", evaluation.score);
+		m_List.SetItemText(iItem, 7, buf);
+		m_List.SetItemText(iItem, 8, evaluation.comment);
+	}
+	case IDCANCEL:;
+	}
 }

@@ -48,13 +48,15 @@ END_MESSAGE_MAP()
 
 // CTeacherDlg message handlers
 
-int __stdcall CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM sort) {
+static int __stdcall CompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM sort) {
 	int result;
 	switch (sort & ~0x80000000) {
 	case 0: result = g_scores[lParam1].sid.Compare(g_scores[lParam2].sid); break;
 	case 1: result = g_scores[lParam1].name.Compare(g_scores[lParam2].name); break;
 	case 2: result = g_scores[lParam1].course.Compare(g_scores[lParam2].course); break;
 	case 3: result = g_scores[lParam1].score - g_scores[lParam2].score; break;
+	case 4: result = g_scores[lParam1].evaluation.score - g_scores[lParam2].evaluation.score; break;
+	case 5: result = g_scores[lParam1].evaluation.comment.Compare(g_scores[lParam2].evaluation.comment); break;
 	default:
 		assert(false);
 	}
@@ -75,6 +77,8 @@ BOOL CTeacherDlg::OnInitDialog()
 	m_List.InsertColumn(1, L"姓名", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(2, L"课程名称", LVCFMT_LEFT, 200);
 	m_List.InsertColumn(3, L"成绩", LVCFMT_LEFT, 90);
+	m_List.InsertColumn(4, L"评分", LVCFMT_LEFT, 40);
+	m_List.InsertColumn(5, L"评语", LVCFMT_LEFT, 200);
 	m_editList.SetParent(&m_List);
 
 
@@ -141,6 +145,11 @@ void CTeacherDlg::RefreshScores(bool refresh_classes)
 		CString text;
 		text.Format(L"%d", score.score);  //#shit
 		m_List.SetItem(item, 3, LVIF_TEXT, text, 0, 0, 0, 0);
+		if (score.evaluation.evaluated) {
+			text.Format(L"%d", score.evaluation.score);
+			m_List.SetItem(item, 4, LVIF_TEXT, text, 0, 0, 0, 0);
+			m_List.SetItem(item, 5, LVIF_TEXT, score.evaluation.comment, 0, 0, 0, 0);
+		}
 		item++;
 
 		if (refresh_classes)

@@ -37,4 +37,5 @@ public:
 	afx_msg void OnStudentJoin();
 	afx_msg void OnStudentExit();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	afx_msg void OnStudentEvaluate();
 };

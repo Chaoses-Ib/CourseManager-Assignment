@@ -15,6 +15,7 @@
 #define IDD_SYSTEM_TEACHER              138
 #define IDD_SYSTEM_COURSE               141
 #define IDR_MENU_SYSTEM                 143
+#define IDD_STUDENT_EVALUATION          144
 #define IDC_TEACHER_DLG                 1000
 #define IDC_LIST                        1004
 #define IDC_BUTTON1                     1005
@@ -43,27 +44,31 @@
 #define IDC_EDIT_SYSTEM_STUDENT_NAME    1027
 #define IDC_EDIT_SYSTEM_STUDENT_CLASS   1028
 #define IDC_BUTTON_SYSTEM_STUDENT_ADD   1029
-#define IDC_EDIT_SYSTEM_STUDENT_CLASS2  1030
 #define IDC_EDIT_SYSTEM_COURSE_HOUR     1030
 #define IDC_EDIT_SYSTEM_COURSE_CID      1031
 #define IDC_EDIT_SYSTEM_COURSE_NAME     1032
 #define IDC_EDIT_SYSTEM_COURSE_CREDIT   1033
 #define IDC_EDIT_SYSTEM_COURSE_TYPE     1034
 #define IDC_BUTTON_SYSTEM_COURSE_ADD    1035
+#define IDC_EDIT_STUDENT_EVALUATION_SCORE 1037
+#define IDC_EDIT_STUDENT_EVALUATION_COMMENT 1038
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_STUDENT_JOIN                 32773
 #define ID_STUDENT_EXIT                 32774
 #define ID_32775                        32775
 #define ID_SYSTEM_DELETE                32776
+#define ID_32777                        32777
+#define ID_STUDENT_                     32778
+#define ID_STUDENT_EVALUATE             32779
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        144
-#define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1036
+#define _APS_NEXT_RESOURCE_VALUE        146
+#define _APS_NEXT_COMMAND_VALUE         32780
+#define _APS_NEXT_CONTROL_VALUE         1039
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

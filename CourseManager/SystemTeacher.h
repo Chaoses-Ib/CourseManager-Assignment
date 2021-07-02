@@ -1,5 +1,5 @@
 ﻿#pragma once
-
+#include "CMyListCtrl.h"
 
 // SystemTeacher dialog
 
@@ -22,7 +22,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	bool m_bModified;
-	CListCtrl m_List;
+	CMyListCtrl m_List;
 	virtual BOOL OnInitDialog();
 	CEdit m_editTid;
 	CEdit m_editName;
