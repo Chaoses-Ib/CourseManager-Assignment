@@ -223,6 +223,14 @@ extern struct CourseUtil : DataUtil<Course> {
 		}
 		return nullptr;
 	}
+
+	int index_name(CString name) {
+		for (int i = 0; i < v.size(); i++) {
+			if (v[i].name == name)
+				return i;
+		}
+		return -1;
+	}
 } g_courses;
 
 extern struct StudentUtil : DataUtil<Student> {

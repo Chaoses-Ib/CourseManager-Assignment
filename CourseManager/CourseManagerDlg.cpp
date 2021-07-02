@@ -7,6 +7,7 @@
 #include "CourseManager.h"
 #include "CourseManagerDlg.h"
 #include "TeacherDlg.h"
+#include "StudentDlg.h"
 #include "afxdialogex.h"
 
 #ifdef _DEBUG
@@ -69,6 +70,7 @@ BEGIN_MESSAGE_MAP(CCourseManagerDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_TEACHER_DLG, &CCourseManagerDlg::OnBnClickedTeacherDlg)
 //	ON_BN_CLICKED(IDCANCEL, &CCourseManagerDlg::OnBnClickedCancel)
 ON_BN_CLICKED(IDCANCEL, &CCourseManagerDlg::OnBnClickedCancel)
+ON_BN_CLICKED(IDC_STUDENT_DLG, &CCourseManagerDlg::OnBnClickedStudentDlg)
 END_MESSAGE_MAP()
 
 
@@ -167,6 +169,12 @@ void CCourseManagerDlg::OnBnClickedTeacherDlg()
 {
 	CTeacherDlg dlg2;
 	dlg2.DoModal();
+}
+
+void CCourseManagerDlg::OnBnClickedStudentDlg()
+{
+	StudentDlg dlg;
+	dlg.DoModal();
 }
 
 void CCourseManagerDlg::OnBnClickedCancel()
