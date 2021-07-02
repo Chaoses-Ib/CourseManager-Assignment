@@ -55,4 +55,6 @@ public:
 
 	afx_msg void OnEnKillfocusEditList();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	CEdit m_editScore;
+	afx_msg void OnEnKillfocusEditScore();
 };

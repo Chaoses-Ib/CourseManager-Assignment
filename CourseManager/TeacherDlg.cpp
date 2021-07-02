@@ -34,6 +34,7 @@ void CTeacherDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT_FIND, m_editFind);
 	DDX_Control(pDX, IDC_LIST_STATISTICS, m_listStatistics);
 	DDX_Control(pDX, IDC_EDIT_LIST, m_editList);
+	DDX_Control(pDX, IDC_EDIT_SCORE, m_editScore);
 }
 
 
@@ -42,8 +43,9 @@ ON_BN_CLICKED(IDC_IMPORT, &CTeacherDlg::OnBnClickedImport)
 ON_CBN_SELCHANGE(IDC_COMBO_CLASS, &CTeacherDlg::OnCbnSelchangeComboClass)
 ON_BN_CLICKED(IDCANCEL, &CTeacherDlg::OnBnClickedCancel)
 ON_BN_CLICKED(IDC_BUTTON_FIND, &CTeacherDlg::OnBnClickedButtonFind)
-ON_NOTIFY(NM_DBLCLK, IDC_LIST, &CTeacherDlg::OnNMDblclkList)
 ON_EN_KILLFOCUS(IDC_EDIT_LIST, &CTeacherDlg::OnEnKillfocusEditList)
+ON_WM_KILLFOCUS()
+ON_EN_KILLFOCUS(IDC_EDIT_SCORE, &CTeacherDlg::OnEnKillfocusEditScore)
 END_MESSAGE_MAP()
 
 // CTeacherDlg message handlers
@@ -108,11 +110,25 @@ void CTeacherDlg::OnBnClickedImport()
 }
 
 void CTeacherDlg::ForeachFilteredScore(std::function<void(size_t, Score&)> f) {
+	//[min, max)
+	int score_min = 0;
+	int score_max = 0x7FFFFFFF;
+
+	CString buf;
+	m_editScore.GetWindowTextW(buf);
+	if (!buf.IsEmpty()) {
+		std::wstringstream ss(buf.GetString());
+		if (!(ss >> score_min && ss.ignore() && ss >> score_max)) {
+			//#TODO
+		}
+	}
+
 	int sel = m_comboClass.GetCurSel();
 	if (sel == 0 || sel == -1) {
 		for (size_t i = 0; i < g_scores.v.size(); i++) {
 			Score& score = g_scores[i];
-			f(i, score);
+			if (score_min <= score.score && score.score < score_max)
+				f(i, score);
 		}
 	}
 	else {
@@ -121,13 +137,19 @@ void CTeacherDlg::ForeachFilteredScore(std::function<void(size_t, Score&)> f) {
 		for (size_t i = 0; i < g_scores.v.size(); i++) {
 			if (g_students.find_sid(g_scores[i].sid)->classid == classid) {
 				Score& score = g_scores[i];
-				f(i, score);
+				if (score_min <= score.score && score.score < score_max)
+					f(i, score);
 			}
 		}
 	}
 }
 
 void CTeacherDlg::OnCbnSelchangeComboClass()
+{
+	RefreshScores(false);
+}
+
+void CTeacherDlg::OnEnKillfocusEditScore()
 {
 	RefreshScores(false);
 }

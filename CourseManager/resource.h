@@ -28,6 +28,8 @@
 #define IDC_BUTTON_FIND                 1008
 #define IDC_LIST_STATISTICS             1009
 #define IDC_EDIT_LIST                   1011
+#define IDC_EDIT_FIND2                  1012
+#define IDC_EDIT_SCORE                  1012
 #define IDC_EDIT_SID                    1014
 #define IDC_BUTTON_QUERY                1015
 #define IDC_STATIC_INFO                 1016
