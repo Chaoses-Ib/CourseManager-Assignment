@@ -23,4 +23,14 @@ protected:
 public:
 	bool m_bModified;
 	CListCtrl m_List;
+	CEdit m_editSid;
+	CEdit m_editName;
+	CEdit m_editClass;
+	CEdit m_editMajor;
+	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedButtonSystemStudentAdd();
+	int iItem;
+	afx_msg void OnNMRClickListSystemStudent(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnSystemDelete();
+	void AddListItem(int i);
 };

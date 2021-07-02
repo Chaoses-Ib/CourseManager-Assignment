@@ -14,7 +14,6 @@
 #define IDD_SYSTEM_STUDENT              137
 #define IDD_SYSTEM_TEACHER              138
 #define IDD_SYSTEM_COURSE               141
-#define IDR_MENU1                       143
 #define IDR_MENU_SYSTEM                 143
 #define IDC_TEACHER_DLG                 1000
 #define IDC_LIST                        1004
@@ -39,6 +38,11 @@
 #define IDC_EDIT_SYSTEM_TEACHER_TID     1022
 #define IDC_EDIT_SYSTEM_TEACHER_COURSES 1023
 #define IDC_EDIT_SYSTEM_TEACHER_NAME    1024
+#define IDC_EDIT_SYSTEM_STUDENT_MAJOR   1025
+#define IDC_EDIT_SYSTEM_STUDENT_SID     1026
+#define IDC_EDIT_SYSTEM_STUDENT_NAME    1027
+#define IDC_EDIT_SYSTEM_STUDENT_CLASS   1028
+#define IDC_BUTTON_SYSTEM_STUDENT_ADD   1029
 #define ID_32771                        32771
 #define ID_32772                        32772
 #define ID_STUDENT_JOIN                 32773
@@ -52,7 +56,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1023
+#define _APS_NEXT_CONTROL_VALUE         1030
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

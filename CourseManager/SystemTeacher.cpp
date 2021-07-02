@@ -15,7 +15,7 @@ SystemTeacher::SystemTeacher(CWnd* pParent /*=nullptr*/)
 	: CDialogEx(IDD_SYSTEM_TEACHER, pParent)
 {
 	m_bModified = false;
-	iItem = 0;
+	iItem = -1;
 }
 
 SystemTeacher::~SystemTeacher()
