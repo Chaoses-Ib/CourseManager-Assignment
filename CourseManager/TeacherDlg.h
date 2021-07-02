@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "CMyListCtrl.h"
+#include <functional>
 
 // CTeacherDlg dialog
 
@@ -33,7 +34,7 @@ public:
 	afx_msg void OnCbnSelchangeComboClass();
 	CComboBox m_comboClass;
 protected:
-	void RefreshScores();
+	void RefreshScores(bool refresh_classes);
 public:
 	afx_msg void OnBnClickedCancel();
 protected:
@@ -41,4 +42,7 @@ protected:
 public:
 	afx_msg void OnBnClickedButtonFind();
 	CEdit m_editFind;
+	void RefreshStatistics();
+	void ForeachFilteredScore(std::function<void(size_t, Score&)>);
+	CListCtrl m_listStatistics;
 };

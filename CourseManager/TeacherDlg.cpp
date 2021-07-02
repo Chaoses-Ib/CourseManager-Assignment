@@ -8,6 +8,7 @@
 
 #include "Data.hpp"
 #include <set>
+#include <map>
 
 
 // CTeacherDlg dialog
@@ -30,6 +31,7 @@ void CTeacherDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST, m_List);
 	DDX_Control(pDX, IDC_COMBO_CLASS, m_comboClass);
 	DDX_Control(pDX, IDC_EDIT_FIND, m_editFind);
+	DDX_Control(pDX, IDC_LIST_STATISTICS, m_listStatistics);
 }
 
 
@@ -62,7 +64,6 @@ BOOL CTeacherDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// Set big icon
 	SetIcon(m_hIcon, FALSE);		// Set small icon
 
-	m_List.ModifyStyle(0, LVS_SHOWSELALWAYS);
 	m_List.SetExtendedStyle(m_List.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
 	m_List.CompareFunc = CompareFunc;
 
@@ -70,7 +71,17 @@ BOOL CTeacherDlg::OnInitDialog()
 	m_List.InsertColumn(1, L"姓名", LVCFMT_LEFT, 90);
 	m_List.InsertColumn(2, L"课程名称", LVCFMT_LEFT, 200);
 	m_List.InsertColumn(3, L"成绩", LVCFMT_LEFT, 90);
-	RefreshScores();
+
+
+	m_listStatistics.SetExtendedStyle(m_List.GetExtendedStyle() | LVS_EX_FULLROWSELECT);
+
+	m_listStatistics.InsertColumn(0, L"课程名称", LVCFMT_LEFT, 200);
+	m_listStatistics.InsertColumn(1, L"平均分", LVCFMT_LEFT, 60);
+	m_listStatistics.InsertColumn(2, L"标准差", LVCFMT_LEFT, 60);
+	m_listStatistics.InsertColumn(3, L"及格率", LVCFMT_LEFT, 60);
+
+
+	RefreshScores(true);
 
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
@@ -84,63 +95,64 @@ void CTeacherDlg::OnBnClickedImport()
 		g_scores.v.push_back(std::move(score));
 	m_modified = true;
 
-	RefreshScores();
+	RefreshScores(true);
+}
+
+void CTeacherDlg::ForeachFilteredScore(std::function<void(size_t, Score&)> f) {
+	int sel = m_comboClass.GetCurSel();
+	if (sel == 0 || sel == -1) {
+		for (size_t i = 0; i < g_scores.v.size(); i++) {
+			Score& score = g_scores[i];
+			f(i, score);
+		}
+	}
+	else {
+		CString classid;
+		m_comboClass.GetLBText(sel, classid);
+		for (size_t i = 0; i < g_scores.v.size(); i++) {
+			if (g_students.find_sid(g_scores[i].sid)->classid == classid) {
+				Score& score = g_scores[i];
+				f(i, score);
+			}
+		}
+	}
 }
 
 void CTeacherDlg::OnCbnSelchangeComboClass()
 {
-	m_List.DeleteAllItems();
-
-	int sel = m_comboClass.GetCurSel();
-	if (sel == 0) {
-		RefreshScores();
-		return;
-	}
-
-	CString classid;
-	m_comboClass.GetLBText(sel, classid);
-	int item = 0;
-	for (uint32_t i = 0; i < g_scores.v.size(); i++) {
-		auto& score = g_scores[i];
-		if (g_students.find_sid(score.sid)->classid == classid) {  //#todo
-			m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, item, score.sid, 0, 0, 0, i);  //nItem can't be -1
-			m_List.SetItem(item, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
-			m_List.SetItem(item, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
-			CString text;
-			text.Format(L"%d", score.score);  //#shit
-			m_List.SetItem(item, 3, LVIF_TEXT, text, 0, 0, 0, 0);
-
-			item++;
-		}
-	}
-	m_List.RefreshSort();
+	RefreshScores(false);
 }
 
-void CTeacherDlg::RefreshScores()
+void CTeacherDlg::RefreshScores(bool refresh_classes)
 {
 	m_List.DeleteAllItems();
 
 	static std::set<std::wstring> classes;
-	for (uint32_t i = 0; i < g_scores.v.size(); i++) {
-		auto& score = g_scores[i];
-
-		m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, i, score.sid, 0, 0, 0, i);  //nItem can't be -1
-		m_List.SetItem(i, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
-		m_List.SetItem(i, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
+	int item = 0;
+	ForeachFilteredScore([this, &item, refresh_classes](size_t i, Score& score) {
+		m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, item, score.sid, 0, 0, 0, i);  //nItem can't be -1
+		m_List.SetItem(item, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
+		m_List.SetItem(item, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
 		CString text;
 		text.Format(L"%d", score.score);  //#shit
-		m_List.SetItem(i, 3, LVIF_TEXT, text, 0, 0, 0, 0);
+		m_List.SetItem(item, 3, LVIF_TEXT, text, 0, 0, 0, 0);
+		item++;
 
-		classes.emplace(g_students.find_sid(score.sid)->classid);  //#todo
-	}
+		if (refresh_classes)
+			classes.emplace(g_students.find_sid(score.sid)->classid);  //#todo
+	});
 	m_List.RefreshSort();
 
-	m_comboClass.ResetContent();  //#shit name
-	m_comboClass.AddString(L"全部");
-	for (std::wstring classid : classes) {
-		m_comboClass.AddString(classid.c_str());
+	if (refresh_classes) {
+		m_comboClass.ResetContent();  //#shit name
+		m_comboClass.AddString(L"全部");
+		for (std::wstring classid : classes) {
+			m_comboClass.AddString(classid.c_str());
+		}
+		m_comboClass.SetCurSel(0);
 	}
-	m_comboClass.SetCurSel(0);
+
+	RefreshStatistics();
 }
 
 
@@ -211,4 +223,55 @@ void CTeacherDlg::OnBnClickedButtonFind()
 	m_List.SetFocus();  //otherwise the selected item is in grey
 	m_List.SetItemState(item, LVIS_SELECTED, LVIS_SELECTED);
 	m_List.EnsureVisible(item, false);
+}
+
+struct CStringHash
+{
+	std::size_t operator()(CString const& s) const noexcept
+	{
+		return std::hash<std::wstring>{}(s.GetString());
+	}
+};
+
+void CTeacherDlg::RefreshStatistics()
+{
+	struct Statistics {
+		uint32_t sum;
+		int pass;
+		int n;
+		double avg;
+		double standard_deviation;
+	};
+
+	std::unordered_map<CString, Statistics, CStringHash> map;
+	ForeachFilteredScore([&map](size_t i, Score& score) {
+		Statistics& sta = map[score.course];
+		++sta.n;
+		sta.sum += score.score;
+		if (score.score >= 60)
+			++sta.pass;
+	});
+	for (auto& [course, sta] : map) {
+		sta.avg = (double)sta.sum / sta.n;
+	}
+	ForeachFilteredScore([&map](size_t i, Score& score) {
+		Statistics& sta = map[score.course];
+		sta.standard_deviation += pow(score.score - sta.avg, 2);
+	});
+
+	m_listStatistics.DeleteAllItems();
+	int i = 0;
+	for (auto& [course, sta] : map) {
+		sta.standard_deviation = sqrt(sta.standard_deviation / sta.n);
+
+		m_listStatistics.InsertItem(LVIF_TEXT, i, course, 0, 0, 0, 0);
+		CString buf;
+		buf.Format(L"%.1f", sta.avg);
+		m_listStatistics.SetItem(i, 1, LVIF_TEXT, buf, 0, 0, 0, 0);
+		buf.Format(L"%.1f", sta.standard_deviation);
+		m_listStatistics.SetItem(i, 2, LVIF_TEXT, buf, 0, 0, 0, 0);
+		buf.Format(L"%.1f%%", 100.0 * sta.pass / sta.n);
+		m_listStatistics.SetItem(i, 3, LVIF_TEXT, buf, 0, 0, 0, 0);
+		++i;
+	}
 }
