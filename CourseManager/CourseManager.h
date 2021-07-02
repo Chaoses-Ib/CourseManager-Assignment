@@ -9,7 +9,7 @@
 #endif
 
 #include "resource.h"		// main symbols
-#include "DataFile.hpp"
+#include "Data.hpp"
 
 
 // CCourseManagerApp:
@@ -31,8 +31,3 @@ public:
 };
 
 extern CCourseManagerApp theApp;
-
-extern vector<Staff> g_staffs;
-extern vector<Course> g_courses;
-extern vector<Student> g_students;
-extern vector<Score> g_scores;

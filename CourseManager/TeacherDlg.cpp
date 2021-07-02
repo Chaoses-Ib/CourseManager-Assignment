@@ -6,7 +6,7 @@
 #include "TeacherDlg.h"
 #include "afxdialogex.h"
 
-#include "DataFile.hpp"
+#include "Data.hpp"
 #include <set>
 
 
@@ -35,6 +35,7 @@ void CTeacherDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTeacherDlg, CDialogEx)
 ON_BN_CLICKED(IDC_IMPORT, &CTeacherDlg::OnBnClickedImport)
 ON_CBN_SELCHANGE(IDC_COMBO_CLASS, &CTeacherDlg::OnCbnSelchangeComboClass)
+ON_BN_CLICKED(IDCANCEL, &CTeacherDlg::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 // CTeacherDlg message handlers
@@ -75,7 +76,7 @@ void CTeacherDlg::OnBnClickedImport()
 	ScoreDataFile file;
 	vector<Score> import_scores = file.OpenDlg(this);
 	for (Score& score : import_scores)
-		g_scores.push_back(std::move(score));
+		g_scores.v.push_back(std::move(score));
 
 	RefreshScores();
 }
@@ -93,22 +94,17 @@ void CTeacherDlg::OnCbnSelchangeComboClass()
 	CString classid;
 	m_comboClass.GetLBText(sel, classid);
 	int item = 0;
-	for (uint32_t i = 0; i < g_scores.size(); i++) {
+	for (uint32_t i = 0; i < g_scores.v.size(); i++) {
 		auto& score = g_scores[i];
-		for (Student& student : g_students) {
-			if (student.sid == score.sid) {
-				if (student.classid == classid) {
-					m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, item, score.sid, 0, 0, 0, i);  //nItem can't be -1
-					m_List.SetItem(item, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
-					m_List.SetItem(item, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
-					CString text;
-					text.Format(L"%d", score.score);  //#shit
-					m_List.SetItem(item, 3, LVIF_TEXT, text, 0, 0, 0, 0);
+		if (g_students.find_sid(score.sid)->classid == classid) {  //#todo
+			m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, item, score.sid, 0, 0, 0, i);  //nItem can't be -1
+			m_List.SetItem(item, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
+			m_List.SetItem(item, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
+			CString text;
+			text.Format(L"%d", score.score);  //#shit
+			m_List.SetItem(item, 3, LVIF_TEXT, text, 0, 0, 0, 0);
 
-					item++;
-				}
-				break;
-			}
+			item++;
 		}
 	}
 	m_List.RefreshSort();
@@ -119,9 +115,8 @@ void CTeacherDlg::RefreshScores()
 	m_List.DeleteAllItems();
 
 	static std::set<std::wstring> classes;
-	for (uint32_t i = 0; i < g_scores.size(); i++) {
+	for (uint32_t i = 0; i < g_scores.v.size(); i++) {
 		auto& score = g_scores[i];
-
 
 		m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, i, score.sid, 0, 0, 0, i);  //nItem can't be -1
 		m_List.SetItem(i, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
@@ -130,16 +125,7 @@ void CTeacherDlg::RefreshScores()
 		text.Format(L"%d", score.score);  //#shit
 		m_List.SetItem(i, 3, LVIF_TEXT, text, 0, 0, 0, 0);
 
-
-		for (Student& student : g_students) {
-			if (student.sid == score.sid) {
-				classes.emplace(student.classid);
-				break;
-			}
-		}
-		/*std::find_if(g_students.begin(), g_students.end(), [&score](const Student& student) {
-			return student.sid == score.sid;
-		});*/
+		classes.emplace(g_students.find_sid(score.sid)->classid);  //#todo
 	}
 	m_List.RefreshSort();
 
@@ -149,4 +135,11 @@ void CTeacherDlg::RefreshScores()
 		m_comboClass.AddString(classid.c_str());
 	}
 	m_comboClass.SetCurSel(0);
+}
+
+
+void CTeacherDlg::OnBnClickedCancel()
+{
+	//#TODO
+	CDialogEx::OnCancel();
 }

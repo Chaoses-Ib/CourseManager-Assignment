@@ -190,7 +190,7 @@
     <ClInclude Include="CMyListCtrl.h" />
     <ClInclude Include="CourseManager.h" />
     <ClInclude Include="CourseManagerDlg.h" />
-    <ClInclude Include="DataFile.hpp" />
+    <ClInclude Include="Data.hpp" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -201,6 +201,7 @@
     <ClCompile Include="CMyListCtrl.cpp" />
     <ClCompile Include="CourseManager.cpp" />
     <ClCompile Include="CourseManagerDlg.cpp" />
+    <ClCompile Include="Data.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

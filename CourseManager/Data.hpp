@@ -34,6 +34,7 @@ struct Score {
 	uint32_t score;
 };
 
+
 template<typename Data>
 class DataFile {
 public:
@@ -181,3 +182,55 @@ public:
 		f << "#END";
 	}
 };
+
+template<typename Data>
+struct DataUtil {
+	vector<Data> v;
+
+	Data& operator[](size_t i) {
+		return v[i];
+	}
+	const Data& operator[](size_t i) const {
+		return v[i];
+	}
+};
+
+extern struct StaffUtil : DataUtil<Staff> {
+	StaffDataFile file;
+
+	Staff* find_tid(CString tid) {
+		for (Staff& staff : v) {
+			if (staff.tid == tid)
+				return &staff;
+		}
+		return nullptr;
+	}
+} g_staffs;
+
+extern struct CourseUtil : DataUtil<Course> {
+	CourseDataFile file;
+
+	Course* find_cid(CString cid) {
+		for (Course& course : v) {
+			if (course.cid == cid)
+				return &course;
+		}
+		return nullptr;
+	}
+} g_courses;
+
+extern struct StudentUtil : DataUtil<Student> {
+	StudentDataFile file;
+
+	Student* find_sid(CString sid) {
+		for (Student& student : v) {
+			if (student.sid == sid)
+				return &student;
+		}
+		return nullptr;
+	}
+} g_students;
+
+extern struct ScoreUtil : DataUtil<Score> {
+	ScoreDataFile file;
+} g_scores;

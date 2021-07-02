@@ -34,4 +34,6 @@ public:
 	CComboBox m_comboClass;
 protected:
 	void RefreshScores();
+public:
+	afx_msg void OnBnClickedCancel();
 };

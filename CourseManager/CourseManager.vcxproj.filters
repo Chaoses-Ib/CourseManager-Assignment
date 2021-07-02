@@ -36,7 +36,7 @@
     <ClInclude Include="TeacherDlg.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DataFile.hpp">
+    <ClInclude Include="Data.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="CMyListCtrl.h">
@@ -57,6 +57,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CMyListCtrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
