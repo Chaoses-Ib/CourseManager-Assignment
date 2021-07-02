@@ -41,11 +41,11 @@ void CTeacherDlg::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CTeacherDlg, CDialogEx)
 ON_BN_CLICKED(IDC_IMPORT, &CTeacherDlg::OnBnClickedImport)
 ON_CBN_SELCHANGE(IDC_COMBO_CLASS, &CTeacherDlg::OnCbnSelchangeComboClass)
+ON_EN_KILLFOCUS(IDC_EDIT_SCORE, &CTeacherDlg::OnEnKillfocusEditScore)
 ON_BN_CLICKED(IDCANCEL, &CTeacherDlg::OnBnClickedCancel)
 ON_BN_CLICKED(IDC_BUTTON_FIND, &CTeacherDlg::OnBnClickedButtonFind)
+ON_NOTIFY(NM_DBLCLK, IDC_LIST, &CTeacherDlg::OnNMDblclkList)
 ON_EN_KILLFOCUS(IDC_EDIT_LIST, &CTeacherDlg::OnEnKillfocusEditList)
-ON_WM_KILLFOCUS()
-ON_EN_KILLFOCUS(IDC_EDIT_SCORE, &CTeacherDlg::OnEnKillfocusEditScore)
 END_MESSAGE_MAP()
 
 // CTeacherDlg message handlers
@@ -342,7 +342,10 @@ void CTeacherDlg::OnNMDblclkList(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CTeacherDlg::OnEnKillfocusEditList()
 {
-	assert(m_iEditList != -1);
+	if (m_iEditList == -1) {
+		//#TODO
+		return;
+	}
 	CString text;
 	m_editList.GetWindowTextW(text);
 
