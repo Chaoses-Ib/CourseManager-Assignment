@@ -26,4 +26,15 @@ public:
 	CEdit m_editSid;
 	afx_msg void OnBnClickedButtonQuery();
 	CStatic m_staticInfo;
+
+public:
+	double m_JoinedCredit;
+	CStatic m_staticJoined;
+	void RefreshJoinedCredit();
+
+	int iItem;
+	afx_msg void OnNMRClickList(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnStudentJoin();
+	afx_msg void OnStudentExit();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

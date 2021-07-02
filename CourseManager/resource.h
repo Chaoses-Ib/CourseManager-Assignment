@@ -9,6 +9,7 @@
 #define IDR_MAINFRAME                   128
 #define IDD_TEACHER_DIALOG              130
 #define IDD_STUDENT_DIALOG              132
+#define IDR_MENU_STUDENT                134
 #define IDC_TEACHER_DLG                 1000
 #define IDC_LIST                        1004
 #define IDC_BUTTON1                     1005
@@ -22,14 +23,19 @@
 #define IDC_EDIT_SID                    1014
 #define IDC_BUTTON_QUERY                1015
 #define IDC_STATIC_INFO                 1016
+#define IDC_STATIC_JOINED               1017
+#define ID_32771                        32771
+#define ID_32772                        32772
+#define ID_STUDENT_JOIN                 32773
+#define ID_STUDENT_EXIT                 32774
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        134
-#define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1017
+#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_CONTROL_VALUE         1018
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
