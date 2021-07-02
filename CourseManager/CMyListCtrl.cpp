@@ -12,8 +12,7 @@ IMPLEMENT_DYNAMIC(CMyListCtrl, CListCtrl)
 
 CMyListCtrl::CMyListCtrl()
 {
-
-	m_sorted_column = 0;
+	m_sorted_column = -1;
 }
 
 CMyListCtrl::~CMyListCtrl()
@@ -67,6 +66,8 @@ void CMyListCtrl::OnHdnItemclick(NMHDR* pNMHDR, LRESULT* pResult)
 
 void CMyListCtrl::RefreshSort()
 {
+	if (m_sorted_column == -1)
+		return;
 	HDITEM header;
 	header.mask = HDI_FORMAT;
 	GetHeaderCtrl()->GetItem(m_sorted_column, &header);

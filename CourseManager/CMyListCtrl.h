@@ -17,5 +17,5 @@ public:
 	afx_msg void OnHdnItemclick(NMHDR* pNMHDR, LRESULT* pResult);
 	int (__stdcall *CompareFunc)(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	void RefreshSort();
-	int m_sorted_column = -1;
+	int m_sorted_column;
 };
