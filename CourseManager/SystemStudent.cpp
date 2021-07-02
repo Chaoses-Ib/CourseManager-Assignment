@@ -80,7 +80,10 @@ void SystemStudent::OnBnClickedButtonSystemStudentAdd()
 
 	g_students.v.push_back(std::move(s));
 	m_bModified = true;
-	AddListItem(g_students.v.size() - 1);
+
+	int i = g_students.v.size() - 1;
+	AddListItem(i);
+	m_List.EnsureVisible(i, false);
 }
 
 void SystemStudent::OnNMRClickListSystemStudent(NMHDR* pNMHDR, LRESULT* pResult)

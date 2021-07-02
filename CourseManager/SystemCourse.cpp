@@ -95,7 +95,10 @@ void SystemCourse::OnBnClickedButtonSystemCourseAdd()
 
 	g_courses.v.push_back(std::move(s));
 	m_bModified = true;
-	AddListItem(g_courses.v.size() - 1);
+
+	int i = g_courses.v.size() - 1;
+	AddListItem(i);
+	m_List.EnsureVisible(i, false);
 }
 
 void SystemCourse::OnNMRClickListSystemCourse(NMHDR* pNMHDR, LRESULT* pResult)

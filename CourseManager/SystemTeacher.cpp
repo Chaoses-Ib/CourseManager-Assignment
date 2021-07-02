@@ -87,7 +87,10 @@ void SystemTeacher::OnBnClickedButtonSystemTeacherAdd()
 
 	g_staffs.v.push_back(std::move(s));
 	m_bModified = true;
-	AddListItem(g_staffs.v.size() - 1);
+	
+	int i = g_courses.v.size() - 1;
+	AddListItem(i);
+	m_List.EnsureVisible(i, false);
 }
 
 void SystemTeacher::OnNMRClickListSystemTeacher(NMHDR* pNMHDR, LRESULT* pResult)
