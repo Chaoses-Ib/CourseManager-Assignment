@@ -36,4 +36,6 @@ protected:
 	void RefreshScores();
 public:
 	afx_msg void OnBnClickedCancel();
+protected:
+	bool m_modified = false;
 };

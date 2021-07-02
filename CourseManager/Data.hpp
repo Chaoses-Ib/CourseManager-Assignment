@@ -35,6 +35,12 @@ struct Score {
 };
 
 
+inline std::ostream& operator<<(std::ostream& o, CString s) {
+	//ofstream will be converted to ostream by (<< '\t')
+	o << CStringA(s).GetString();
+	return o;
+}
+
 template<typename Data>
 class DataFile {
 public:

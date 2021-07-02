@@ -77,6 +77,7 @@ void CTeacherDlg::OnBnClickedImport()
 	vector<Score> import_scores = file.OpenDlg(this);
 	for (Score& score : import_scores)
 		g_scores.v.push_back(std::move(score));
+	m_modified = true;
 
 	RefreshScores();
 }
@@ -140,6 +141,16 @@ void CTeacherDlg::RefreshScores()
 
 void CTeacherDlg::OnBnClickedCancel()
 {
-	//#TODO
-	CDialogEx::OnCancel();
+	if (m_modified) {
+		int button = MessageBoxW(L"是否保存更改？", L"询问", MB_YESNOCANCEL | MB_ICONQUESTION);
+		switch (button) {
+		default: assert(false);
+		case IDCANCEL: return;
+		case IDYES: g_scores.file.SaveFile(LR"(.\data\score.txt)", g_scores.v);
+		case IDNO: CDialogEx::OnCancel();
+		}
+	}
+	else {
+		CDialogEx::OnCancel();
+	}
 }
