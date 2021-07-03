@@ -111,7 +111,7 @@ void CTeacherDlg::OnBnClickedImport()
 	RefreshScores(true);
 }
 
-void CTeacherDlg::ForeachFilteredScore(std::function<void(size_t, Score&)> f) {
+bool CTeacherDlg::ForeachFilteredScore(std::function<void(size_t i, Score& score, bool& stop)> f) {
 	//[min, max)
 	int score_min = 0;
 	int score_max = 0x7FFFFFFF;
@@ -125,12 +125,16 @@ void CTeacherDlg::ForeachFilteredScore(std::function<void(size_t, Score&)> f) {
 		}
 	}
 
+	bool stop = false;
 	int sel = m_comboClass.GetCurSel();
 	if (sel == 0 || sel == -1) {
 		for (size_t i = 0; i < g_scores.v.size(); i++) {
 			Score& score = g_scores[i];
-			if (score_min <= score.score && score.score < score_max)
-				f(i, score);
+			if (score_min <= score.score && score.score < score_max) {
+				f(i, score, stop);
+				if (stop)
+					break;
+			}
 		}
 	}
 	else {
@@ -139,11 +143,15 @@ void CTeacherDlg::ForeachFilteredScore(std::function<void(size_t, Score&)> f) {
 		for (size_t i = 0; i < g_scores.v.size(); i++) {
 			if (g_students.find_sid(g_scores[i].sid)->classid == classid) {
 				Score& score = g_scores[i];
-				if (score_min <= score.score && score.score < score_max)
-					f(i, score);
+				if (score_min <= score.score && score.score < score_max) {
+					f(i, score, stop);
+					if (stop)
+						break;
+				}
 			}
 		}
 	}
+	return stop;
 }
 
 void CTeacherDlg::OnCbnSelchangeComboClass()
@@ -162,7 +170,7 @@ void CTeacherDlg::RefreshScores(bool refresh_classes)
 
 	static std::set<std::wstring> classes;
 	int item = 0;
-	ForeachFilteredScore([this, &item, refresh_classes](size_t i, Score& score) {
+	ForeachFilteredScore([this, &item, refresh_classes](size_t i, Score& score, bool& stop) {
 		m_List.InsertItem(LVIF_TEXT | LVIF_PARAM, item, score.sid, 0, 0, 0, i);  //nItem can't be -1
 		m_List.SetItem(item, 1, LVIF_TEXT, score.name, 0, 0, 0, 0);
 		m_List.SetItem(item, 2, LVIF_TEXT, score.course, 0, 0, 0, 0);
@@ -229,30 +237,12 @@ void CTeacherDlg::OnBnClickedButtonFind()
 		item = m_List.FindItem(&info);  //only first column
 	}
 	else {  //name
-		int sel = m_comboClass.GetCurSel();
-		if (sel == 0) {
-			for (size_t i = 0; i < g_scores.v.size(); i++) {
-				auto& score = g_scores[i];
-				if (score.name == find) {
-					item = i;
-					break;
-				}
+		if (ForeachFilteredScore([&find, &item](size_t i, Score& score, bool& stop) {
+			if (score.name == find) {
+				item = i;
+				stop = true;
 			}
-		}
-		else {
-			CString classid;
-			m_comboClass.GetLBText(sel, classid);
-			for (size_t i = 0; i < g_scores.v.size(); i++) {
-				auto& score = g_scores[i];
-				if (score.name == find
-					&& g_students.find_sid(score.sid)->classid == classid) {
-					item = i;
-					break;
-				}
-			}
-		}
-
-		if (item != -1) {
+		})) {
 			LVFINDINFOW info;
 			info.flags = LVFI_PARAM;
 			info.lParam = item;
@@ -286,7 +276,7 @@ void CTeacherDlg::RefreshStatistics()
 	};
 
 	std::unordered_map<CString, Statistics, CStringHash> map;
-	ForeachFilteredScore([&map](size_t i, Score& score) {
+	ForeachFilteredScore([&map](size_t i, Score& score, bool& stop) {
 		Statistics& sta = map[score.course];
 		++sta.n;
 		sta.sum += score.score;
@@ -296,7 +286,7 @@ void CTeacherDlg::RefreshStatistics()
 	for (auto& [course, sta] : map) {
 		sta.avg = (double)sta.sum / sta.n;
 	}
-	ForeachFilteredScore([&map](size_t i, Score& score) {
+	ForeachFilteredScore([&map](size_t i, Score& score, bool& stop) {
 		Statistics& sta = map[score.course];
 		sta.standard_deviation += pow(score.score - sta.avg, 2);
 	});

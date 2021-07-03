@@ -43,7 +43,9 @@ public:
 	afx_msg void OnBnClickedButtonFind();
 	CEdit m_editFind;
 	void RefreshStatistics();
-	void ForeachFilteredScore(std::function<void(size_t, Score&)>);
+
+	// Return true if stopped, otherwise false.
+	bool ForeachFilteredScore(std::function<void(size_t i, Score& score, bool& stop)> f);
 	CListCtrl m_listStatistics;
 
 public:
