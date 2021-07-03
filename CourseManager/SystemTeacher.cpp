@@ -86,7 +86,7 @@ void SystemTeacher::AddListItem(int i)
 	m_List.SetItemText(i, 2, buf);
 
 	if (staff.evaluation.n) {
-		buf.Format(L"%.1f", (double)staff.evaluation.sum / staff.evaluation.n);
+		buf.Format(L"%.1f", staff.evaluation.avg());
 		m_List.SetItemText(i, 3, buf);
 	}
 }
