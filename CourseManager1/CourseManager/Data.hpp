@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "pch.h"
 #include <string>
 #include <sstream>
@@ -123,7 +123,7 @@ public:
 	}
 
 	void Emit(std::ofstream& f, vector<Staff>& data) override {
-		f << "#¹¤ºÅ£¨ID£©\tÐÕÃû\tÊÚ¿Î\n";
+		f << "#å·¥å·ï¼ˆIDï¼‰\tå§“å\tæŽˆè¯¾\n";
 		for (Staff& i : data) {
 			f << i.tid << '\t' << i.name;
 			for (CString& course : i.courses) {
@@ -149,7 +149,7 @@ public:
 	}
 
 	void Emit(std::ofstream& f, vector<Course>& data) override {
-		f << "#¿Î³Ì±àºÅ\t¿Î³ÌÃû³Æ\tÑ§·Ö\tÑ§Ê±\t¿Î³ÌÀà±ð\n";
+		f << "#è¯¾ç¨‹ç¼–å·\tè¯¾ç¨‹åç§°\tå­¦åˆ†\tå­¦æ—¶\tè¯¾ç¨‹ç±»åˆ«\n";
 		for (Course& i : data) {
 			f << i.cid << '\t' << i.name << '\t' << i.credit << '\t' << i.hour << '\t' << i.type;
 			f << std::endl;
@@ -171,7 +171,7 @@ public:
 	}
 
 	void Emit(std::ofstream& f, vector<Student>& data) override {
-		f << "#Ñ§ºÅ£¨ID£©\tÐÕÃû\t°à¼¶\t×¨Òµ\n";
+		f << "#å­¦å·ï¼ˆIDï¼‰\tå§“å\tç­çº§\tä¸“ä¸š\n";
 		for (Student& i : data) {
 			f << i.sid << '\t' << i.name << '\t' << i.classid << '\t' << i.major;
 			f << std::endl;
@@ -193,7 +193,7 @@ public:
 	}
 
 	void Emit(std::ofstream& f, vector<Score>& data) override {
-		f << "#Ñ§ºÅ\tÐÕÃû\t¿Î³ÌÃû³Æ\t³É¼¨\n";
+		f << "#å­¦å·\tå§“å\tè¯¾ç¨‹åç§°\tæˆç»©\n";
 		for (Score& i : data) {
 			f << i.sid << '\t' << i.name << '\t' << i.course << '\t' << i.score;
 			f << std::endl;
