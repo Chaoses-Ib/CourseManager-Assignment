@@ -1,0 +1,63 @@
+﻿<Page x:Class="CourseManager.StudentCourse"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CourseManager"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      d:Background="White"
+      Title="StudentCourse">
+    
+    <Page.CommandBindings>
+        <CommandBinding x:Name="cmdRefresh" Command="NavigationCommands.Refresh" Executed="cmdRefresh_Executed"></CommandBinding>
+    </Page.CommandBindings>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label>学号：</Label>
+            <TextBox x:Name="editId" MinWidth="100"></TextBox>
+            <Button Command="NavigationCommands.Refresh" Padding="7,3,7,3">查询</Button>
+        </StackPanel>
+        <Label x:Name="labelInfo" Grid.Row="1"></Label>
+        <DataGrid x:Name="dgCourseTaking" Grid.Row="2" AutoGenerateColumns="False" RowEditEnding="dgCourseTaking_RowEditEnding" ContextMenuOpening="ContextMenu_ContextMenuOpening">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="课程号" Binding="{Binding Id}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="课程名" Binding="{Binding Name}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="学分" Binding="{Binding Credits}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="类别" Binding="{Binding Type}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="选课" Binding="{Binding Taking}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="分数" Binding="{Binding Score}" IsReadOnly="True">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Score, Converter={x:Static local:IsScoreFailConverter.Instance}}" Value="True">
+                                    <Setter Property="Background" Value="DarkOrange"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding Score, Converter={x:Static local:IsScoreExcellentConverter.Instance}}" Value="True">
+                                    <Setter Property="Background" Value="LimeGreen"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="教师名" Binding="{Binding TeacherName}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="教师评分" Binding="{Binding TeacherScore, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}"></DataGridTextColumn>
+                <DataGridTextColumn Header="教师评语" Binding="{Binding TeacherRemark, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="menuJoin" Header="选课" Click="menuJoin_Click"></MenuItem>
+                    <MenuItem x:Name="menuExit" Header="退选" Click="menuExit_Click"></MenuItem>
+                    <MenuItem Header="复制" Command="ApplicationCommands.Copy"></MenuItem>
+                    <MenuItem Header="刷新" Command="NavigationCommands.Refresh"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+    </Grid>
+</Page>

@@ -1,0 +1,55 @@
+﻿<Page x:Class="CourseManager.StudentManage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:CourseManager"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      d:Background="White"
+      Title="StudentManage">
+
+    <Page.CommandBindings>
+        <CommandBinding x:Name="cmdRefresh" Command="NavigationCommands.Refresh" Executed="cmdRefresh_Executed"></CommandBinding>
+    </Page.CommandBindings>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label>学号：</Label>
+            <TextBox x:Name="editSearch" MinWidth="100"></TextBox>
+            <Label>班级：</Label>
+            <ComboBox x:Name="comboClass" MinWidth="75" SelectedIndex="0" SelectionChanged="comboClass_SelectionChanged">
+                <ComboBoxItem>全部</ComboBoxItem>
+            </ComboBox>
+            <Button Padding="7,3,7,3" Command="NavigationCommands.Refresh">查找</Button>
+        </StackPanel>
+        <DataGrid x:Name="dgStudent" Grid.Row="1" AutoGenerateColumns="False" RowEditEnding="dgStudent_RowEditEnding">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="学号" Binding="{Binding Id}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="姓名" Binding="{Binding Name, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                <DataGridTextColumn Header="性别" Binding="{Binding Gender, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                <DataGridTextColumn Header="班级" Binding="{Binding Class, UpdateSourceTrigger=PropertyChanged}"></DataGridTextColumn>
+                <DataGridTextColumn Header="专业" Binding="{Binding Major}" IsReadOnly="True"></DataGridTextColumn>
+                <DataGridTextColumn Header="学院" Binding="{Binding Department}" IsReadOnly="True"></DataGridTextColumn>
+            </DataGrid.Columns>
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="复制" Command="ApplicationCommands.Copy"></MenuItem>
+                    <MenuItem Header="刷新" Command="NavigationCommands.Refresh"></MenuItem>
+                    <MenuItem x:Name="menuDelete" Header="删除" Click="menuDelete_Click"></MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+        </DataGrid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Label>学号：</Label>
+            <TextBox x:Name="editId" MinWidth="100"></TextBox>
+            <Button x:Name="btnAdd" Click="btnAdd_Click" Padding="7,3,7,3">添加</Button>
+        </StackPanel>
+    </Grid>
+</Page>

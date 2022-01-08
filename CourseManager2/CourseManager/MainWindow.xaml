@@ -1,0 +1,39 @@
+﻿<Window x:Class="CourseManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CourseManager"
+        mc:Ignorable="d"
+        Title="教务管理系统" Height="600" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <TreeView Grid.Row="0" Grid.Column="0" Padding="0,0,20,0">
+            <TreeViewItem Header="学生模块" IsExpanded="True">
+                <TreeViewItem x:Name="StudentCourse" Header="选课及课程成绩查询" Selected="StudentCourse_Selected"></TreeViewItem>
+            </TreeViewItem>
+            <TreeViewItem Header="教师模块" IsExpanded="True">
+                <TreeViewItem x:Name="TeacherCourseScore" Header="课程成绩管理" Selected="TeacherCourseScore_Selected"></TreeViewItem>
+            </TreeViewItem>
+            <TreeViewItem Header="系统管理" IsExpanded="True">
+                <TreeViewItem x:Name="StudentManage" Header="学生管理" Selected="StudentManage_Selected"></TreeViewItem>
+                <TreeViewItem x:Name="ClassManage" Header="班级管理" Selected="ClassManage_Selected"></TreeViewItem>
+                <TreeViewItem x:Name="CourseManage" Header="课程管理" Selected="CourseManage_Selected"></TreeViewItem>
+                <TreeViewItem x:Name="TeacherManage" Header="教师管理" Selected="TeacherManage_Selected"></TreeViewItem>
+                <TreeViewItem x:Name="DatabaseMaintain" Header="数据库维护" Selected="DatabaseMaintain_Selected"></TreeViewItem>
+            </TreeViewItem>
+        </TreeView>
+        <Frame x:Name="Frame" Grid.Row="0" Grid.Column="1" NavigationUIVisibility="Hidden"></Frame>
+        <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="btnExit" Margin="5,3,5,3" Padding="7,3,7,3" Click="btnExit_Click">退出</Button>
+        </StackPanel>
+    </Grid>
+</Window>
