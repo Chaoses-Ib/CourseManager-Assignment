@@ -8,3 +8,6 @@ C++ + CSV-like + MFC
 C# + SQLite + ADO.NET + WPF
 
 ![](CourseManager2/docs/preview.png)
+
+## 相关仓库
+* [Officeyutong/CXXOOPCourseDesign](https://github.com/Officeyutong/CXXOOPCourseDesign)：C++ + Qt + SQLite
